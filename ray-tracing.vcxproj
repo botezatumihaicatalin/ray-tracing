@@ -145,14 +145,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rendering\Ray.h" />
     <ClInclude Include="rendering\Camera.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="rendering\Scene.h" />
+    <ClInclude Include="rendering\Sphere.h" />
     <ClInclude Include="geometry\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray-tracing.cpp" />
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

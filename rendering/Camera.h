@@ -1,18 +1,23 @@
 #pragma once
 
-#include "../geometry/Vector3.h"
+#include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
-class Camera
-{
-
-private:
-  Vector3 point_;
-  Vector3 direction_;
-  double fieldOfView_;
+class Camera {
 
 public:
-  Camera(Vector3& point, Vector3& direction, double fov) : 
-    point_(point), direction_(direction), fieldOfView_(fov) {};
+  glm::vec3 eye;
+  glm::vec3 target;
+  glm::vec3 up;
 
+  Camera(): Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1)) {};
+  Camera(const glm::vec3& eye, const glm::vec3& target, const glm::vec3 up): eye(eye), target(target), up(up) {}
+  Camera(const glm::vec3& eye, const glm::vec3& target): Camera(eye, target, glm::vec3(0, 1, 0)) {}
+
+  glm::mat4 viewMatrix() const;
 };
 
+inline glm::mat4 Camera::viewMatrix() const {
+  return glm::lookAt(eye, target, up);
+}

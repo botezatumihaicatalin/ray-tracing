@@ -2,20 +2,28 @@
 //
 
 #include "stdafx.h"
-#include "geometry/Vector3.h"
-#include "rendering/Camera.h"
-
-#include <iostream>
+#include "rendering/Scene.h"
+#include "glm/ext.hpp"
+#include <fstream>
 
 int main()
 {
 
-  Vector3 a(10, 10, 10);
-  Vector3 b(20, 21, 22);
-  Vector3 cross = a * b;
-
-  printf("%f, %f, %f \r\n", cross[0], cross[1], cross[2]);
+  Scene scene(640, 480);
+  glm::vec3* pixels = scene.render();
   system("pause");
+
+  std::ofstream ofs("./out.ppm", std::ios::out | std::ios::binary);
+  ofs << "P6\r\n" << scene.width() << " " << scene.height() << "\r\n255\r\n";
+  for (uint32_t i = 0; i < scene.height() * scene.width(); ++i) {
+    char r = (char)(pixels[i].x);
+    char g = (char)(pixels[i].y);
+    char b = (char)(pixels[i].z);
+    ofs << r << g << b;
+  }
+
+  ofs.close();
+  delete[] pixels;
 
   return 0;
 }
