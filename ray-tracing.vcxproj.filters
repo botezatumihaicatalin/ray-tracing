@@ -21,9 +21,6 @@
     <ClInclude Include="rendering\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="geometry\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rendering\Ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -6,6 +6,14 @@
 #include "glm/ext.hpp"
 #include <fstream>
 
+#ifndef M_PI
+#define M_PI 3.141592653589793
+#endif
+
+#ifndef INFINITY
+#define INFINITY 1e8
+#endif
+
 int main()
 {
 

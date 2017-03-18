@@ -149,7 +149,6 @@
     <ClInclude Include="rendering\Camera.h" />
     <ClInclude Include="rendering\Scene.h" />
     <ClInclude Include="rendering\Sphere.h" />
-    <ClInclude Include="geometry\Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray-tracing.cpp" />
