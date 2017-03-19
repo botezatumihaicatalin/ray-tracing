@@ -8,13 +8,7 @@
 #include <vector>
 #include "Light.h"
 #include <algorithm>
-
-struct RayTrace {
-  float tnear;
-  const Sphere* sphere;
-
-  RayTrace(const Sphere* sphere, float tnear): sphere(sphere), tnear(tnear) {}
-};
+#include "RayTrace.h"
 
 class Scene {
 
@@ -85,16 +79,17 @@ inline RayTrace Scene::trace_ray(const Ray& ray) const {
 
 inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
   RayTrace trace1 = trace_ray(ray);
-  const Sphere* sphere = trace1.sphere;
-  float tnear = trace1.tnear;
 
-  if (!sphere) {
+  if (!trace1.has_trace()) {
     return glm::vec3(0, 0, 0);
   }
 
+  const Sphere sphere = trace1.sphere();
+  float ray_tnear = trace1.tnear();
+
   glm::vec3 surface_color = glm::vec3(0.03f, 0.03f, 0.03f) * glm::vec3(0.9f);
-  glm::vec3 int_point = ray.origin() + ray.direction() * tnear;
-  glm::vec3 int_normal = glm::normalize(int_point - sphere->center());
+  glm::vec3 int_point = ray.origin() + ray.direction() * ray_tnear;
+  glm::vec3 int_normal = glm::normalize(int_point - sphere.center());
 
   for (Light const& light : lights_) {
     glm::vec3 light_dir = light.position() - int_point;
@@ -102,7 +97,9 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
 
     Ray shadow_ray(int_point, light_dir);
     RayTrace shadow_trace = trace_ray(shadow_ray);
-    bool isInShadow = shadow_trace.sphere && (shadow_trace.tnear * shadow_trace.tnear) < light_distance2;
+    float shadow_tnear = shadow_trace.tnear();
+
+    bool isInShadow = shadow_trace.has_trace() && (shadow_tnear * shadow_tnear) < light_distance2;
 
     float light_dot_normal = std::max(0.f, glm::dot(shadow_ray.direction(), int_normal));
 

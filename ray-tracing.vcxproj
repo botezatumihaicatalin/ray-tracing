@@ -148,6 +148,7 @@
     <ClInclude Include="rendering\Light.h" />
     <ClInclude Include="rendering\Ray.h" />
     <ClInclude Include="rendering\Camera.h" />
+    <ClInclude Include="rendering\RayTrace.h" />
     <ClInclude Include="rendering\Scene.h" />
     <ClInclude Include="rendering\Sphere.h" />
   </ItemGroup>
