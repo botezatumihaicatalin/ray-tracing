@@ -10,7 +10,7 @@ private:
 
 public:
   Ray(const glm::vec3& origin, const glm::vec3& direction)
-    : origin_(origin), direction_(direction) {}
+    : origin_(origin), direction_(glm::normalize(direction)) {}
 
   glm::vec3 direction() const;
   glm::vec3 origin() const;

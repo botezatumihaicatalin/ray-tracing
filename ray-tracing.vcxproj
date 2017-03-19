@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rendering\Light.h" />
     <ClInclude Include="rendering\Ray.h" />
     <ClInclude Include="rendering\Camera.h" />
     <ClInclude Include="rendering\Scene.h" />

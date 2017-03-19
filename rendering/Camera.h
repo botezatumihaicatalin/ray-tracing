@@ -18,6 +18,7 @@ public:
   Camera(const glm::vec3& eye, const glm::vec3& target): Camera(eye, target, glm::vec3(0, 1, 0)) {}
 
   glm::mat4 viewMatrix() const;
+
   glm::vec3 eye() const;
   glm::vec3 target() const;
   glm::vec3 up() const;

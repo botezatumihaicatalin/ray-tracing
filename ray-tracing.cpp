@@ -17,7 +17,7 @@
 int main()
 {
 
-  Scene scene(640, 480);
+  Scene scene(640 * 2, 480 * 2);
   glm::vec3* pixels = scene.render();
   system("pause");
 
