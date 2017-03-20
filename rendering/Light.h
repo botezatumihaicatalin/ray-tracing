@@ -12,9 +12,9 @@ private:
 
 public:
 
-  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3&  diffuse, const glm::vec3& specular) :
+  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) :
     position_(position), ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
-  
+
   const glm::vec3& position() const;
   const glm::vec3& ambient() const;
   const glm::vec3& diffuse() const;
@@ -36,4 +36,3 @@ inline const glm::vec3& Light::diffuse() const {
 inline const glm::vec3& Light::specular() const {
   return specular_;
 }
-

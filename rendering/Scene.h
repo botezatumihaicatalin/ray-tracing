@@ -101,8 +101,12 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
 
     float light_dot_normal = std::max(0.f, glm::dot(shadow_ray.direction(), int_normal));
 
-    surface_color += light.ambient() * glm::vec3(0.03f, 0.03f, 0.03f);
-    surface_color += (1 - isInShadow) * light_dot_normal * light.diffuse() * glm::vec3(1, 1, 0.101);
+    glm::vec3 h_direction = glm::normalize(shadow_ray.direction() - ray.direction());
+    float reflection_dot_normal = std::max(0.f, glm::dot(h_direction, int_normal));
+
+    surface_color += light.ambient() * glm::vec3(0.2, 0.2, 0.22);
+    surface_color += (1 - isInShadow) * light_dot_normal * light.diffuse() * glm::vec3(0.6, 0.7, 0.8);
+    surface_color += (1 - isInShadow) * pow(reflection_dot_normal, 10) * light.specular() * glm::vec3(1, 1, 1);
   }
 
   return surface_color * 255.0f;
