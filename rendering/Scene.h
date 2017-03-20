@@ -27,7 +27,7 @@ public:
 
   Scene(size_t width, size_t height);
 
-  Ray make_ray(size_t x, size_t y) const;
+  Ray make_ray(float x, float y) const;
   RayTrace trace_ray(const Ray& ray) const;
   glm::vec3 cast_ray(const Ray& ray) const;
   glm::vec3* render() const;
@@ -50,7 +50,7 @@ inline Scene::Scene(size_t width, size_t height) {
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(1.0f)));
 }
 
-inline Ray Scene::make_ray(size_t x, size_t y) const {
+inline Ray Scene::make_ray(float x, float y) const {
   float nx = (x / float(width_)) - 0.5f;
   float ny = (y / float(height_)) - 0.5f;
 
@@ -116,9 +116,18 @@ inline glm::vec3* Scene::render() const {
   glm::vec3* buffer = new glm::vec3[width_ * height_];
 
   unsigned i = 0;
-  for (unsigned x = 0; x < width_; ++x) {
-    for (unsigned y = 0; y < height_; ++y, i++) {
-      buffer[i] = cast_ray(make_ray(x, y));
+  for (float x = 0; x < width_; ++x) {
+    for (float y = 0; y < height_; ++y, i++) {
+      glm::vec3 total_colour(0);
+      
+      // Supersampling
+      for (float dx = -0.5f; dx <= 0.5f; dx += 0.5f) {
+        for (float dy = -0.5f; dy < 0.5f; dy += 0.5f) {
+          total_colour += cast_ray(make_ray(x + dx, y + dy));
+        }
+      }
+
+      buffer[i] = total_colour / 9.f;
     }
   }
   return buffer;
