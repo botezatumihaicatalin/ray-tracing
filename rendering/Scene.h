@@ -122,7 +122,7 @@ inline glm::vec3* Scene::render() const {
       
       // Supersampling
       for (float dx = -0.5f; dx <= 0.5f; dx += 0.5f) {
-        for (float dy = -0.5f; dy < 0.5f; dy += 0.5f) {
+        for (float dy = -0.5f; dy <= 0.5f; dy += 0.5f) {
           total_colour += cast_ray(make_ray(x + dx, y + dy));
         }
       }
