@@ -15,25 +15,25 @@ public:
   explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3&  diffuse, const glm::vec3& specular) :
     position_(position), ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
   
-  glm::vec3 position() const;
-  glm::vec3 ambient() const;
-  glm::vec3 diffuse() const;
-  glm::vec3 specular() const;
+  const glm::vec3& position() const;
+  const glm::vec3& ambient() const;
+  const glm::vec3& diffuse() const;
+  const glm::vec3& specular() const;
 };
 
-inline glm::vec3 Light::position() const {
+inline const glm::vec3& Light::position() const {
   return position_;
 }
 
-inline glm::vec3 Light::ambient() const {
+inline const glm::vec3& Light::ambient() const {
   return ambient_;
 }
 
-inline glm::vec3 Light::diffuse() const {
+inline const glm::vec3& Light::diffuse() const {
   return diffuse_;
 }
 
-inline glm::vec3 Light::specular() const {
+inline const glm::vec3& Light::specular() const {
   return specular_;
 }
 

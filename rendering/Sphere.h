@@ -14,17 +14,17 @@ private:
 public:
   Sphere(const glm::vec3& center, float radius) : center_(center), radius_(radius) {}
 
-  glm::vec3 center() const;
-  float radius() const;
+  const glm::vec3& center() const;
+  const float& radius() const;
 
   float intersects(const Ray& ray) const;
 };
 
-inline glm::vec3 Sphere::center() const {
+inline const glm::vec3& Sphere::center() const {
   return center_;
 }
 
-inline float Sphere::radius() const {
+inline const float& Sphere::radius() const {
   return radius_;
 }
 

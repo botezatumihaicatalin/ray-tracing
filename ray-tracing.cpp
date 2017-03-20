@@ -18,8 +18,12 @@
 int main()
 {
 
-  Scene scene(640 * 2, 480 * 2);
+  Scene scene(640, 480);
+  clock_t t0 = clock();
   glm::vec3* pixels = scene.render();
+  clock_t t1 = clock();
+
+  printf("Render = %f secs\n", float(t1 - t0) / 1000);
 
   cimg_library::CImg<float> image(scene.width(),scene.height(),1,3,0);
 

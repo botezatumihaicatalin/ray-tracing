@@ -32,8 +32,8 @@ public:
   glm::vec3 cast_ray(const Ray& ray) const;
   glm::vec3* render() const;
 
-  size_t width() const;
-  size_t height() const;
+  const size_t& width() const;
+  const size_t& height() const;
 };
 
 inline Scene::Scene(size_t width, size_t height) {
@@ -54,15 +54,11 @@ inline Ray Scene::make_ray(size_t x, size_t y) const {
   float nx = (x / float(width_)) - 0.5f;
   float ny = (y / float(height_)) - 0.5f;
 
-  glm::vec3 camera_eye = camera_.eye();
-  glm::vec3 camera_target = camera_.target();
-  glm::vec3 camera_up = camera_.up();
+  glm::vec3 camera_right = glm::cross(camera_.target(), camera_.up());
 
-  glm::vec3 camera_right = glm::cross(camera_target, camera_up);
-
-  glm::vec3 image_point = nx * camera_right + ny * camera_up + camera_eye + camera_target;
-  glm::vec3 ray_direction = image_point - camera_eye;
-  return Ray(camera_eye, ray_direction);
+  glm::vec3 image_point = nx * camera_right + ny * camera_.up() + camera_.eye() + camera_.target();
+  glm::vec3 ray_direction = image_point - camera_.eye();
+  return Ray(camera_.eye(), ray_direction);
 }
 
 inline RayTrace Scene::trace_ray(const Ray& ray) const {
@@ -80,13 +76,13 @@ inline RayTrace Scene::trace_ray(const Ray& ray) const {
 }
 
 inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
-  RayTrace trace1 = trace_ray(ray);
+  const RayTrace trace1 = trace_ray(ray);
 
   if (!trace1.has_trace()) {
-    return glm::vec3(0, 139, 139);
+    return glm::vec3(62, 174, 218);
   }
 
-  const Sphere sphere = trace1.sphere();
+  const Sphere& sphere = trace1.sphere();
   float ray_tnear = trace1.tnear();
 
   glm::vec3 surface_color = glm::vec3(0.03f, 0.03f, 0.03f) * glm::vec3(0.9f);
@@ -124,11 +120,11 @@ inline glm::vec3* Scene::render() const {
   return buffer;
 }
 
-inline size_t Scene::width() const {
+inline const size_t& Scene::width() const {
   return width_;
 }
 
-inline size_t Scene::height() const {
+inline const size_t& Scene::height() const {
   return height_;
 }
 
