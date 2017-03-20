@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Sphere.h"
 
 class RayTrace {

@@ -1,13 +1,15 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include "glm/vec3.hpp"
+#include <algorithm>
+#include <vector>
+
+#include "../glm/glm.hpp"
+#include "../glm/vec3.hpp"
+
 #include "Camera.h"
 #include "Ray.h"
 #include "Sphere.h"
-#include <vector>
 #include "Light.h"
-#include <algorithm>
 #include "RayTrace.h"
 
 class Scene {
@@ -81,7 +83,7 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
   RayTrace trace1 = trace_ray(ray);
 
   if (!trace1.has_trace()) {
-    return glm::vec3(0, 0, 0);
+    return glm::vec3(0, 139, 139);
   }
 
   const Sphere sphere = trace1.sphere();
@@ -114,8 +116,8 @@ inline glm::vec3* Scene::render() const {
   glm::vec3* buffer = new glm::vec3[width_ * height_];
 
   unsigned i = 0;
-  for (unsigned y = 0; y < height_; ++y) {
-    for (unsigned x = 0; x < width_; ++x, i++) {
+  for (unsigned x = 0; x < width_; ++x) {
+    for (unsigned y = 0; y < height_; ++y, i++) {
       buffer[i] = cast_ray(make_ray(x, y));
     }
   }

@@ -1,10 +1,11 @@
 // ray-tracing.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+#include <fstream>
+
 #include "rendering/Scene.h"
 #include "glm/ext.hpp"
-#include <fstream>
+#include "cimg/CImg.h"
 
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -19,18 +20,23 @@ int main()
 
   Scene scene(640 * 2, 480 * 2);
   glm::vec3* pixels = scene.render();
-  system("pause");
 
-  std::ofstream ofs("./out.ppm", std::ios::out | std::ios::binary);
-  ofs << "P6\r\n" << scene.width() << " " << scene.height() << "\r\n255\r\n";
-  for (uint32_t i = 0; i < scene.height() * scene.width(); ++i) {
-    char r = (char)(pixels[i].x);
-    char g = (char)(pixels[i].y);
-    char b = (char)(pixels[i].z);
-    ofs << r << g << b;
+  cimg_library::CImg<float> image(scene.width(),scene.height(),1,3,0);
+
+  uint32_t i = 0;
+  for (size_t x = 0; x < scene.width(); x++) {
+    for (size_t y = 0; y < scene.height(); y++, i++) {
+      image(x, y, 0, 0) = pixels[i][0];
+      image(x, y, 0, 1) = pixels[i][1];
+      image(x, y, 0, 2) = pixels[i][2];
+    }
   }
 
-  ofs.close();
+  cimg_library::CImgDisplay main_disp(image,"Click a point");
+  while (!main_disp.is_closed()) {
+    main_disp.wait();
+  }
+
   delete[] pixels;
 
   return 0;
