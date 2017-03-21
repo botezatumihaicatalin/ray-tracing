@@ -15,6 +15,7 @@
 class Scene {
 
 private:
+  bool antialiasing_;
   Camera camera_;
   size_t width_;
   size_t height_;
@@ -30,16 +31,22 @@ public:
   Ray make_ray(float x, float y) const;
   RayTrace trace_ray(const Ray& ray) const;
   glm::vec3 cast_ray(const Ray& ray) const;
+  glm::vec3 pixel_color(float x, float y) const;
   glm::vec3* render() const;
 
   const size_t& width() const;
   const size_t& height() const;
+  const bool& antialiasing() const;
+  void antialiasing(bool value);
 };
 
 inline Scene::Scene(size_t width, size_t height) {
   width_ = width;
   height_ = height;
+
   fov_ = 60;
+  antialiasing_ = true;
+  
   camera_ = Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
   ratio_ = width / float(height);
 
@@ -112,22 +119,29 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
   return surface_color * 255.0f;
 }
 
+inline glm::vec3 Scene::pixel_color(float x, float y) const {
+  if (!antialiasing_) {
+    return cast_ray(make_ray(x, y));
+  }
+  glm::vec3 total_color(0);
+
+  // Supersampling
+  for (float dx = -0.5f; dx <= 0.5f; dx += 0.5f) {
+    for (float dy = -0.5f; dy <= 0.5f; dy += 0.5f) {
+      total_color += cast_ray(make_ray(x + dx, y + dy));
+    }
+  }
+
+  return total_color / 9.0f;
+}
+
 inline glm::vec3* Scene::render() const {
   glm::vec3* buffer = new glm::vec3[width_ * height_];
 
   unsigned i = 0;
   for (float x = 0; x < width_; ++x) {
     for (float y = 0; y < height_; ++y, i++) {
-      glm::vec3 total_colour(0);
-      
-      // Supersampling
-      for (float dx = -0.5f; dx <= 0.5f; dx += 0.5f) {
-        for (float dy = -0.5f; dy <= 0.5f; dy += 0.5f) {
-          total_colour += cast_ray(make_ray(x + dx, y + dy));
-        }
-      }
-
-      buffer[i] = total_colour / 9.f;
+      buffer[i] = pixel_color(x, y);
     }
   }
   return buffer;
@@ -139,6 +153,14 @@ inline const size_t& Scene::width() const {
 
 inline const size_t& Scene::height() const {
   return height_;
+}
+
+inline const bool& Scene::antialiasing() const {
+  return antialiasing_;
+}
+
+inline void Scene::antialiasing(bool value) {
+  this->antialiasing_ = value;
 }
 
 
