@@ -12,13 +12,13 @@ private:
   // TODO: add transparency, reflection, etc.
 
 public:
-  Sphere(const glm::vec3& center, float radius) : center_(center), radius_(radius) {}
-  Sphere() : Sphere(glm::vec3(0), 0.f) {};
+  __host__ __device__ Sphere(const glm::vec3& center, float radius) : center_(center), radius_(radius) {}
+  __host__ __device__ Sphere() : Sphere(glm::vec3(0), 0.f) {};
 
-  const glm::vec3& center() const;
-  const float& radius() const;
+  __host__ __device__ const glm::vec3& center() const;
+  __host__ __device__ const float& radius() const;
 
-  float intersects(const Ray& ray) const;
+  __host__ __device__ float intersects(const Ray& ray) const;
 };
 
 inline const glm::vec3& Sphere::center() const {

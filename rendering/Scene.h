@@ -11,6 +11,8 @@
 #include "Sphere.h"
 #include "Light.h"
 #include "RayTrace.h"
+#include "Phong.h"
+#include <ctime>
 
 class Scene {
 
@@ -27,17 +29,14 @@ private:
 public:
 
   Scene(size_t width, size_t height);
-
-  Ray make_ray(float x, float y) const;
-  RayTrace trace_ray(const Ray& ray) const;
-  glm::vec3 cast_ray(const Ray& ray) const;
-  glm::vec3 pixel_color(float x, float y) const;
   glm::vec3* render() const;
 
   const size_t& width() const;
   const size_t& height() const;
   const bool& antialiasing() const;
   void antialiasing(bool value);
+
+  Camera& camera();
 };
 
 inline Scene::Scene(size_t width, size_t height) {
@@ -57,22 +56,24 @@ inline Scene::Scene(size_t width, size_t height) {
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(1.0f)));
 }
 
-inline Ray Scene::make_ray(float x, float y) const {
-  float nx = (x / float(width_)) - 0.5f;
-  float ny = (y / float(height_)) - 0.5f;
+__device__ inline Ray make_ray(const Camera& camera, float x, float y, size_t width, size_t height) {
+  float nx = (x / float(width)) - 0.5f;
+  float ny = (y / float(height)) - 0.5f;
 
-  glm::vec3 camera_right = glm::cross(camera_.target(), camera_.up());
+  glm::vec3 camera_right = glm::cross(camera.target(), camera.up());
 
-  glm::vec3 image_point = nx * camera_right + ny * camera_.up() + camera_.eye() + camera_.target();
-  glm::vec3 ray_direction = image_point - camera_.eye();
-  return Ray(camera_.eye(), ray_direction);
+  glm::vec3 image_point = nx * camera_right + ny * camera.up() + camera.eye() + camera.target();
+  glm::vec3 ray_direction = image_point - camera.eye();
+  return Ray(camera.eye(), ray_direction);
 }
 
-inline RayTrace Scene::trace_ray(const Ray& ray) const {
+__device__ inline RayTrace trace_ray(const Ray& ray, Sphere* spheres, size_t spheres_count) {
   float min_tnear = INFINITY;
   const Sphere* sphere = nullptr;
 
-  for (Sphere const& value : spheres_) {
+  size_t i = 0;
+  for (i = 0; i < spheres_count; i++) {
+    Sphere const& value = spheres[i];
     float tnear = value.intersects(ray);
     if (tnear >= 0 && tnear <= min_tnear) {
       min_tnear = tnear, sphere = &value;
@@ -82,8 +83,8 @@ inline RayTrace Scene::trace_ray(const Ray& ray) const {
   return RayTrace(sphere, min_tnear);
 }
 
-inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
-  const RayTrace trace1 = trace_ray(ray);
+__device__ inline glm::vec3 cast_ray(const Ray& ray, Sphere* spheres, size_t spheres_count, Light* lights, size_t lights_count) {
+  const RayTrace trace1 = trace_ray(ray, spheres, spheres_count);
 
   if (!trace1.has_trace()) {
     return glm::vec3(62, 174, 218);
@@ -98,12 +99,15 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
 
   const Phong phong(ray, int_normal);
 
-  for (Light const& light : lights_) {
+  size_t l_idx = 0;
+  for (l_idx = 0; l_idx < lights_count; l_idx++) {
+    Light const& light = lights[l_idx];
+
     glm::vec3 light_dir = light.position() - int_point;
     float light_distance2 = glm::dot(light_dir, light_dir);
 
     Ray shadow_ray(int_point, light_dir);
-    RayTrace shadow_trace = trace_ray(shadow_ray);
+    RayTrace shadow_trace = trace_ray(shadow_ray, spheres, spheres_count);
     float shadow_tnear = shadow_trace.tnear();
 
     bool isInShadow = shadow_trace.has_trace() && (shadow_tnear * shadow_tnear) < light_distance2;
@@ -114,31 +118,62 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
   return surface_color * 255.0f;
 }
 
-inline glm::vec3 Scene::pixel_color(float x, float y) const {
-  if (!antialiasing_) {
-    return cast_ray(make_ray(x, y));
+__global__ inline void render_kernel(size_t width, size_t height, Camera* camera, Light* lights, size_t lights_count, Sphere* spheres, size_t spheres_count, bool antialiasing, glm::vec3* buffer) {
+  
+  // Compute the pixel position from the kernel arguments
+  float x = (blockIdx.x * blockDim.x) + threadIdx.x;
+  float y = (blockIdx.y * blockDim.y) + threadIdx.y;
+  size_t buf_index = x + y * width;
+
+  // First check if the x and y are inside the scene bounds.
+  if (x < 0 || x >= width || y < 0 || y >= height) {
+    return;
   }
+
+  // When not antialiasing, just make one ray and trace it.
+  if (!antialiasing) {
+    const Ray the_ray = make_ray(*camera, x, y, width, height);
+    buffer[buf_index] = cast_ray(the_ray, spheres, spheres_count, lights, lights_count);
+    return;
+  }
+
   glm::vec3 total_color(0);
 
-  // Supersampling
+  // Supersampling antialiasing (http://paulbourke.net/miscellaneous/aliasing/)
+  // Create multiple rays and compute the mean color value.
   for (float dx = -0.5f; dx <= 0.5f; dx += 0.5f) {
     for (float dy = -0.5f; dy <= 0.5f; dy += 0.5f) {
-      total_color += cast_ray(make_ray(x + dx, y + dy));
+      const Ray the_ray = make_ray(*camera, x + dx, y + dy, width, height);
+      total_color += cast_ray(the_ray, spheres, spheres_count, lights, lights_count);
     }
   }
 
-  return total_color / 9.0f;
+  buffer[buf_index] = total_color / 9.0f;
 }
 
 inline glm::vec3* Scene::render() const {
-  glm::vec3* buffer = new glm::vec3[width_ * height_];
 
-  unsigned i = 0;
-  for (float x = 0; x < width_; ++x) {
-    for (float y = 0; y < height_; ++y, i++) {
-      buffer[i] = pixel_color(x, y);
-    }
-  }
+  cuda_scoped_ptr<glm::vec3> d_buffer(width_ * height_);
+  cuda_scoped_ptr<Camera> d_camera(1);
+  cuda_scoped_ptr<Light> d_lights(lights_.size());
+  cuda_scoped_ptr<Sphere> d_spheres(spheres_.size());
+
+  cudaMemcpy(d_camera.get(), &camera_, sizeof(Camera), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_lights.get(), &lights_[0], lights_.size() * sizeof(Light), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_spheres.get(), &spheres_[0], spheres_.size() * sizeof(Sphere), cudaMemcpyHostToDevice);
+
+  dim3 threadsPerBlock(16, 16);
+  dim3 numBlocks((width_ / threadsPerBlock.x) + 1, (height_ / threadsPerBlock.y) + 1);
+
+  clock_t t0 = clock();
+  render_kernel <<<numBlocks, threadsPerBlock>>> (width_, height_, d_camera.get(), d_lights.get(), lights_.size(), d_spheres.get(), spheres_.size(), antialiasing_, d_buffer.get());
+
+  cudaDeviceSynchronize();
+  clock_t t1 = clock();
+  printf("Kernel render = %f secs\n", float(t1 - t0) / 1000);
+
+  glm::vec3* buffer = new glm::vec3[width_ * height_];
+  cudaMemcpy(buffer, d_buffer.get(), width_ * height_ * sizeof(glm::vec3), cudaMemcpyDeviceToHost);
   return buffer;
 }
 
@@ -156,6 +191,10 @@ inline const bool& Scene::antialiasing() const {
 
 inline void Scene::antialiasing(bool value) {
   this->antialiasing_ = value;
+}
+
+inline Camera& Scene::camera() {
+  return camera_;
 }
 
 

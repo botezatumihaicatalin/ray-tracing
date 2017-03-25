@@ -10,12 +10,12 @@ private:
 
 public:
 
-  RayTrace(const Sphere* sphere, float tnear) : sphere_(sphere), tnear_(tnear) {}
+  __host__ __device__ RayTrace(const Sphere* sphere, float tnear) : sphere_(sphere), tnear_(tnear) {}
 
-  const Sphere& sphere() const;
-  float tnear() const;
+  __host__ __device__ const Sphere& sphere() const;
+  __host__ __device__ float tnear() const;
 
-  bool has_trace() const;
+  __host__ __device__ bool has_trace() const;
 };
 
 inline const Sphere& RayTrace::sphere() const {

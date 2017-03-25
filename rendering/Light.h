@@ -12,14 +12,14 @@ private:
 
 public:
 
-  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) :
+  __host__ __device__ explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) :
     position_(position), ambient_(ambient), diffuse_(diffuse), specular_(specular) {};
-  explicit Light() : Light(glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::vec3(0)) {};
+  __host__ __device__ explicit Light() : Light(glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::vec3(0)) {};
 
-  const glm::vec3& position() const;
-  const glm::vec3& ambient() const;
-  const glm::vec3& diffuse() const;
-  const glm::vec3& specular() const;
+  __host__ __device__ const glm::vec3& position() const;
+  __host__ __device__ const glm::vec3& ambient() const;
+  __host__ __device__ const glm::vec3& diffuse() const;
+  __host__ __device__ const glm::vec3& specular() const;
 };
 
 inline const glm::vec3& Light::position() const {
