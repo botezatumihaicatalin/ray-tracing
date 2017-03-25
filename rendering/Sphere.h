@@ -13,6 +13,7 @@ private:
 
 public:
   Sphere(const glm::vec3& center, float radius) : center_(center), radius_(radius) {}
+  Sphere() : Sphere(glm::vec3(0), 0.f) {};
 
   const glm::vec3& center() const;
   const float& radius() const;

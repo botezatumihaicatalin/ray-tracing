@@ -96,6 +96,8 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
   glm::vec3 int_point = ray.origin() + ray.direction() * ray_tnear;
   glm::vec3 int_normal = glm::normalize(int_point - sphere.center());
 
+  const Phong phong(ray, int_normal);
+
   for (Light const& light : lights_) {
     glm::vec3 light_dir = light.position() - int_point;
     float light_distance2 = glm::dot(light_dir, light_dir);
@@ -106,14 +108,7 @@ inline glm::vec3 Scene::cast_ray(const Ray& ray) const {
 
     bool isInShadow = shadow_trace.has_trace() && (shadow_tnear * shadow_tnear) < light_distance2;
 
-    float light_dot_normal = std::max(0.f, glm::dot(shadow_ray.direction(), int_normal));
-
-    glm::vec3 h_direction = glm::normalize(shadow_ray.direction() - ray.direction());
-    float reflection_dot_normal = std::max(0.f, glm::dot(h_direction, int_normal));
-
-    surface_color += light.ambient() * glm::vec3(0.2, 0.2, 0.22);
-    surface_color += (1 - isInShadow) * light_dot_normal * light.diffuse() * glm::vec3(0.6, 0.7, 0.8);
-    surface_color += (1 - isInShadow) * pow(reflection_dot_normal, 10) * light.specular() * glm::vec3(1, 1, 1);
+    surface_color += phong.calc_colour(light, shadow_ray, isInShadow);
   }
 
   return surface_color * 255.0f;
