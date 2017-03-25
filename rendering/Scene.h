@@ -2,9 +2,12 @@
 
 #include <algorithm>
 #include <vector>
+#include <ctime>
 
 #include "../glm/glm.hpp"
 #include "../glm/vec3.hpp"
+
+#include "../utils/cuda_scoped_ptr.hpp"
 
 #include "Camera.h"
 #include "Ray.h"
@@ -12,7 +15,6 @@
 #include "Light.h"
 #include "RayTrace.h"
 #include "Phong.h"
-#include <ctime>
 
 class Scene {
 

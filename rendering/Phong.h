@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cmath>
+
+#include "../glm/glm.hpp"
+
 #include "Ray.h"
 #include "Light.h"
-#include "../glm/glm.hpp"
-#include <algorithm>
-#include <cmath>
+
 
 class Phong {
 
