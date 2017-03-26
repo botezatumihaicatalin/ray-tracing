@@ -55,7 +55,7 @@ inline Scene::Scene(size_t width, size_t height) {
   spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f));
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
-  lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(1.0f)));
+  lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.f, .5f, 0.0f)));
 }
 
 __device__ inline Ray make_ray(const Camera& camera, float x, float y, size_t width, size_t height) {

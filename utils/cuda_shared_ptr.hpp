@@ -118,43 +118,31 @@ public:
 };
 
 template <class T, class U>
-inline bool operator==(
-  cuda_shared_ptr<T> const& a,
-  cuda_shared_ptr<U> const& b) noexcept {
+inline bool operator==(cuda_shared_ptr<T> const& a, cuda_shared_ptr<U> const& b) noexcept {
   return a.get() == b.get();
 }
 
 template <class T, class U>
-inline bool operator!=(
-  cuda_shared_ptr<T> const& a,
-  cuda_shared_ptr<U> const& b) noexcept {
+inline bool operator!=(cuda_shared_ptr<T> const& a, cuda_shared_ptr<U> const& b) noexcept {
   return a.get() != b.get();
 }
 
 template <class T>
-inline bool operator==(
-  cuda_shared_ptr<T> const& p,
-  std::nullptr_t) noexcept {
+inline bool operator==(cuda_shared_ptr<T> const& p, std::nullptr_t) noexcept {
   return p.get() == 0;
 }
 
 template <class T>
-inline bool operator==(
-  std::nullptr_t,
-  cuda_shared_ptr<T> const& p) noexcept {
+inline bool operator==(std::nullptr_t, cuda_shared_ptr<T> const& p) noexcept {
   return p.get() == 0;
 }
 
 template <class T>
-inline bool operator!=(
-  cuda_shared_ptr<T> const& p,
-  std::nullptr_t) noexcept {
+inline bool operator!=(cuda_shared_ptr<T> const& p, std::nullptr_t) noexcept {
   return p.get() != 0;
 }
 
 template <class T>
-inline bool operator!=(
-  std::nullptr_t,
-  cuda_shared_ptr<T> const& p) noexcept {
+inline bool operator!=(std::nullptr_t, cuda_shared_ptr<T> const& p) noexcept {
   return p.get() != 0;
 }
