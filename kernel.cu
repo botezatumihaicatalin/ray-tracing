@@ -10,8 +10,8 @@
 #include <memory>
 
 int main() {
-  Scene scene(640, 480);
-  scene.antialiasing(false);
+  Scene scene(1280, 768);
+  scene.antialiasing(true);
   cimg_library::CImg<float> image(scene.width(), scene.height(), 1, 3, 0);
 
   cimg_library::CImgDisplay main_disp(image, "Click a point");
