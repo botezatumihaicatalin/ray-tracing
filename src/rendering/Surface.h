@@ -5,8 +5,8 @@
 class SurfaceProperties {
 
 private:
-  const glm::vec3& point_;
-  const glm::vec3& normal_;
+  const glm::vec3 point_;
+  const glm::vec3 normal_;
   // TODO: add material.
 
 public:

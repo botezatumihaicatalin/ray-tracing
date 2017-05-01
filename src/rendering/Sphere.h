@@ -30,7 +30,10 @@ public:
   float intersection(const Ray& ray) const;
 
   __host__ __device__
-  SurfaceProperties properties(const glm::vec3& properties) const;
+  SurfaceProperties properties(const glm::vec3& int_point) const;
+
+  __host__ __device__
+  SurfaceProperties properties(const Ray& ray) const;
 };
 
 inline float Sphere::intersection(const Ray& ray) const {
@@ -50,7 +53,11 @@ inline float Sphere::intersection(const Ray& ray) const {
   return (t0 < 0 || t0 > t1) ? t1 : t0;
 }
 
-inline SurfaceProperties Sphere::properties(const glm::vec3& point) const {
-  return SurfaceProperties(point, point - center_);
+inline SurfaceProperties Sphere::properties(const glm::vec3& int_point) const {
+  return SurfaceProperties(int_point, int_point - center_);
+}
+
+inline SurfaceProperties Sphere::properties(const Ray& ray) const {
+  return properties(ray.origin() + ray.direction() * intersection(ray));
 }
 

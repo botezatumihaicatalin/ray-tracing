@@ -11,7 +11,8 @@ private:
 public:
 
   __host__ __device__ 
-  RayTrace(const Sphere* surface, float tnear) : surface_(surface), tnear_(tnear) {}
+  RayTrace(const Sphere* surface, float tnear) : 
+    surface_(surface), tnear_(tnear) {}
 
   __host__ __device__ 
   const Sphere* surface() const { return surface_;  }

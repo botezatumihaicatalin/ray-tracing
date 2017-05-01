@@ -41,6 +41,8 @@ public:
 
   void move_forward(const float& delta);
   void move_backward(const float& delta);
+  void move_right(const float& delta);
+  void move_left(const float& delta);
   void rotate(const float& angle);
 };
 
@@ -50,6 +52,16 @@ inline void Camera::move_forward(const float& delta) {
 
 inline void Camera::move_backward(const float& delta) {
   eye_ -= target_ * delta;
+}
+
+inline void Camera::move_right(const float& delta) {
+  glm::vec3 right = glm::cross(target_, up_);
+  eye_ += right * delta;
+}
+
+inline void Camera::move_left(const float& delta) {
+  glm::vec3 right = glm::cross(target_, up_);
+  eye_ -= right * delta;
 }
 
 inline void Camera::rotate(const float& angle) {

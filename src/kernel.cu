@@ -14,10 +14,10 @@
 int main() {
 
   Scene scene(800, 600);
-  scene.antialiasing(false);
-  cimg_library::CImg<float> image(scene.width(), scene.height(), 1, 3, 0);
+  scene.antialiasing(true);
+  cimg_library::CImg<uint8_t> image(scene.width(), scene.height(), 1, 3, 0);
 
-  cimg_library::CImgDisplay main_disp(image, "Click a point");
+  cimg_library::CImgDisplay main_disp(image, "W, A, S, D to move camera and E, R to rotate camera");
   while (!main_disp.is_closed()) {
     
     
@@ -28,7 +28,7 @@ int main() {
     for (size_t y = 0; y < scene.height(); y++) {
       for (size_t x = 0; x < scene.width(); x++, i++) {
         for (size_t c = 0; c < 3; c++) {
-          image(x, y, 0, c) = pixels[i][c];
+          image(x, y, 0, c) = uint8_t(pixels[i][c] * 255);
         }
       }
     }
@@ -43,6 +43,14 @@ int main() {
 
     if (main_disp.is_keyS()) {
       scene.camera().move_backward(0.3f);
+    }
+
+    if (main_disp.is_keyA()) {
+      scene.camera().move_left(0.3f);
+    }
+
+    if (main_disp.is_keyD()) {
+      scene.camera().move_right(0.3f);
     }
 
     if (main_disp.is_keyR()) {
