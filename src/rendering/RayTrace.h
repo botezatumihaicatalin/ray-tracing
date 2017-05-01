@@ -5,30 +5,23 @@
 class RayTrace {
 
 private:
-  const Sphere* sphere_;
+  const Sphere* surface_;
   float tnear_;
 
 public:
 
-  __host__ __device__ RayTrace(const Sphere* sphere, float tnear) : sphere_(sphere), tnear_(tnear) {}
+  __host__ __device__ 
+  RayTrace(const Sphere* surface, float tnear) : surface_(surface), tnear_(tnear) {}
 
-  __host__ __device__ const Sphere& sphere() const;
-  __host__ __device__ float tnear() const;
+  __host__ __device__ 
+  const Sphere* surface() const { return surface_;  }
+  
+  __host__ __device__ 
+  float tnear() const { return tnear_; }
 
-  __host__ __device__ bool has_trace() const;
+  __host__ __device__ 
+  bool has_trace() const { return surface_ != nullptr;  }
 };
-
-inline const Sphere& RayTrace::sphere() const {
-  return *sphere_;
-}
-
-inline float RayTrace::tnear() const {
-  return tnear_;
-}
-
-inline bool RayTrace::has_trace() const {
-  return sphere_ != nullptr;
-}
 
 
 

@@ -12,6 +12,7 @@
 #include "cimg/CImg.h"
 
 int main() {
+
   Scene scene(800, 600);
   scene.antialiasing(false);
   cimg_library::CImg<float> image(scene.width(), scene.height(), 1, 3, 0);

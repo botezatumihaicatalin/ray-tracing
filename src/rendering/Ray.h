@@ -9,20 +9,16 @@ private:
   glm::vec3 direction_;
 
 public:
-  __host__ __device__ Ray(const glm::vec3& origin, const glm::vec3& direction)
+  __host__ __device__ 
+  Ray(const glm::vec3& origin, const glm::vec3& direction)
     : origin_(origin), direction_(glm::normalize(direction)) {}
 
-  __host__ __device__ const glm::vec3& direction() const;
-  __host__ __device__ const glm::vec3& origin() const;
+  __host__ __device__ 
+  const glm::vec3& direction() const { return direction_; }
+
+  __host__ __device__ 
+  const glm::vec3& origin() const { return origin_;  }
 };
-
-inline const glm::vec3& Ray::direction() const {
-  return direction_;
-}
-
-inline const glm::vec3& Ray::origin() const {
-  return origin_;
-}
 
 
 

@@ -13,34 +13,28 @@ private:
 
 public:
 
-  __host__ __device__ explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const glm::vec3& attenuation) :
+  __host__ __device__ 
+  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const glm::vec3& attenuation) :
     position_(position), ambient_(ambient), diffuse_(diffuse), specular_(specular), attenuation_(attenuation) {};
-  __host__ __device__ explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) : Light(position, ambient, diffuse, specular, glm::vec3(1, 0, 0)) {};
-  __host__ __device__ explicit Light() : Light(glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::vec3(0)) {};
 
-  __host__ __device__ const glm::vec3& position() const;
-  __host__ __device__ const glm::vec3& ambient() const;
-  __host__ __device__ const glm::vec3& diffuse() const;
-  __host__ __device__ const glm::vec3& specular() const;
-  __host__ __device__ const glm::vec3& attenuation() const;
+  __host__ __device__ 
+  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) : Light(position, ambient, diffuse, specular, glm::vec3(1, 0, 0)) {};
+  
+  __host__ __device__ 
+  explicit Light() : Light(glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::vec3(0)) {};
+
+  __host__ __device__ 
+  const glm::vec3& position() const { return position_; }
+
+  __host__ __device__ 
+  const glm::vec3& ambient() const { return ambient_; }
+
+  __host__ __device__ 
+  const glm::vec3& diffuse() const { return diffuse_; }
+
+  __host__ __device__ 
+  const glm::vec3& specular() const { return specular_; }
+
+  __host__ __device__ 
+  const glm::vec3& attenuation() const { return attenuation_; }
 };
-
-inline const glm::vec3& Light::position() const {
-  return position_;
-}
-
-inline const glm::vec3& Light::ambient() const {
-  return ambient_;
-}
-
-inline const glm::vec3& Light::diffuse() const {
-  return diffuse_;
-}
-
-inline const glm::vec3& Light::specular() const {
-  return specular_;
-}
-
-inline const glm::vec3 & Light::attenuation() const {
-  return attenuation_;
-}

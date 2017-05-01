@@ -18,36 +18,31 @@ private:
 
 public:
 
-  __host__ __device__ Camera(): Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1)) {};
-  __host__ __device__ Camera(const glm::vec3& eye, const glm::vec3& target, const glm::vec3 up): eye_(eye), target_(glm::normalize(target)), up_(up) {}
-  __host__ __device__ Camera(const glm::vec3& eye, const glm::vec3& target): Camera(eye, target, glm::vec3(0, 1, 0)) {}
+  __host__ __device__ 
+  Camera(): Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1)) {};
+  
+  __host__ __device__ 
+  Camera(const glm::vec3& eye, const glm::vec3& target, const glm::vec3 up): eye_(eye), target_(glm::normalize(target)), up_(up) {}
+  
+  __host__ __device__ 
+  Camera(const glm::vec3& eye, const glm::vec3& target): Camera(eye, target, glm::vec3(0, 1, 0)) {}
 
-  glm::mat4 viewMatrix() const;
+  __host__ __device__
+    glm::mat4 view_matrix() const { return glm::lookAt(eye_, target_, up_);  }
 
-  __host__ __device__ const glm::vec3& eye() const;
-  __host__ __device__ const glm::vec3& target() const;
-  __host__ __device__ const glm::vec3& up() const;
+  __host__ __device__ 
+  const glm::vec3& eye() const { return eye_; }
+  
+  __host__ __device__ 
+  const glm::vec3& target() const { return target_; }
+  
+  __host__ __device__ 
+  const glm::vec3& up() const { return up_; }
 
   void move_forward(const float& delta);
   void move_backward(const float& delta);
   void rotate(const float& angle);
 };
-
-inline glm::mat4 Camera::viewMatrix() const {
-  return glm::lookAt(eye_, target_, up_);
-}
-
-inline const glm::vec3& Camera::eye() const {
-  return eye_;
-}
-
-inline const glm::vec3& Camera::target() const {
-  return target_;
-}
-
-inline const glm::vec3& Camera::up() const {
-  return up_;
-}
 
 inline void Camera::move_forward(const float& delta) {
   eye_ += target_ * delta;

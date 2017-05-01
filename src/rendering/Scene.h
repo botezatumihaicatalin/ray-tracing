@@ -76,7 +76,7 @@ __device__ inline RayTrace trace_ray(const Ray& ray, Sphere* spheres, size_t sph
   size_t i = 0;
   for (i = 0; i < spheres_count; i++) {
     Sphere const& value = spheres[i];
-    float tnear = value.intersects(ray);
+    float tnear = value.intersection(ray);
     if (tnear >= 0 && tnear <= min_tnear) {
       min_tnear = tnear, sphere = &value;
     }
@@ -92,23 +92,24 @@ __device__ inline glm::vec3 cast_ray(const Ray& ray, Sphere* spheres, size_t sph
     return glm::vec3(62, 174, 218);
   }
 
-  const Sphere& sphere = trace1.sphere();
   float ray_tnear = trace1.tnear();
+  const Sphere& sphere = *trace1.surface();
+
+  glm::vec3 intersection = ray.origin() + ray.direction() * ray_tnear;
+  const SurfaceProperties sphere_properties = sphere.properties(intersection);
 
   glm::vec3 surface_color = glm::vec3(0.03f, 0.03f, 0.03f) * glm::vec3(0.9f);
-  glm::vec3 int_point = ray.origin() + ray.direction() * ray_tnear;
-  glm::vec3 int_normal = glm::normalize(int_point - sphere.center());
 
-  const Phong phong(ray, int_normal);
+  const Phong phong(ray, sphere_properties);
 
   size_t l_idx = 0;
   for (l_idx = 0; l_idx < lights_count; l_idx++) {
     Light const& light = lights[l_idx];
 
-    glm::vec3 light_dir = light.position() - int_point;
+    glm::vec3 light_dir = light.position() - sphere_properties.point();
     float light_distance2 = glm::dot(light_dir, light_dir);
 
-    Ray shadow_ray(int_point, light_dir);
+    Ray shadow_ray(sphere_properties.point(), light_dir);
     RayTrace shadow_trace = trace_ray(shadow_ray, spheres, spheres_count);
     float shadow_tnear2 = shadow_trace.tnear() * shadow_trace.tnear();
 
