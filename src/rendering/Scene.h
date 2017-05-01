@@ -51,12 +51,17 @@ inline Scene::Scene(size_t width, size_t height) {
   camera_ = Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
   ratio_ = width / float(height);
 
-  spheres_.push_back(Sphere(glm::vec3(0, 0, 5), 0.5f));
-  spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f));
+  const Material sphere_material1(glm::vec3(0.2, 0.2, 0.22), glm::vec3(0.6, 0.7, 0.8), 
+                                 glm::vec3(1, 1, 1), 8);
+  const Material sphere_material2(glm::vec3(0.45, 0, 0), glm::vec3(0.8, 0, 0),
+                                  glm::vec3(1, 1, 1), 40);
+
+  spheres_.push_back(Sphere(glm::vec3(0, 0, 5), 0.5f, sphere_material1));
+  spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f, sphere_material2));
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(1.0f), glm::vec3(1.0f), 
-                          glm::vec3(1.0f), glm::vec3(1.f, .5f, 0.0f)));
+                          glm::vec3(1.0f), glm::vec3(1.f, .3f, 0.0f)));
 }
 
 __device__ inline Ray make_ray(const Camera& camera, float x, float y, size_t width, size_t height) {
@@ -115,7 +120,7 @@ __device__ inline glm::vec3 cast_ray(const Ray& ray, Sphere* spheres, size_t sph
     surface_color += phong.calc_colour(light, shadow_ray, isInShadow);
   }
 
-  return surface_color;
+  return glm::clamp(surface_color, glm::vec3(0.f), glm::vec3(1.f));
 }
 
 __global__ inline void render_kernel(size_t width, size_t height, Camera* camera, 

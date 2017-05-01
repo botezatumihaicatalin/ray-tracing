@@ -28,18 +28,19 @@ public:
 // Phong illumination: http://gta.math.unibuc.ro/stup/suport_curs_CGGC.pdf
 inline glm::vec3 PhongIllumination::calc_colour(const Light& light, const Ray& shadow_ray, bool in_shadow) const {
   glm::vec3 surface_color(0.f);
+  const Material& material = properties_.material();
 
-  surface_color += light.ambient() * glm::vec3(0.2, 0.2, 0.22); // light_ambient * mat_ambient
+  surface_color += light.ambient() * material.ambient(); // light_ambient * mat_ambient
 
   if (!in_shadow) {
     float light_dot_normal = fmaxf(0.f, glm::dot(shadow_ray.direction(), properties_.normal()));
         
-    surface_color += light_dot_normal * light.diffuse() * glm::vec3(0.6, 0.7, 0.8);
+    surface_color += light_dot_normal * light.diffuse() * material.diffuse();
     
     glm::vec3 h_direction = glm::normalize(shadow_ray.direction() - source_ray_.direction());
     float reflection_dot_normal = fmaxf(0.f, glm::dot(h_direction, properties_.normal()));
 
-    surface_color += pow(reflection_dot_normal, 10) * light.specular() * glm::vec3(1, 1, 1);
+    surface_color += pow(reflection_dot_normal, material.shininess()) * light.specular() * material.specular();
   }
 
   const glm::vec3& atn_vec = light.attenuation();

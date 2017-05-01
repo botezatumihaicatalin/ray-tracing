@@ -18,7 +18,8 @@ public:
     position_(position), ambient_(ambient), diffuse_(diffuse), specular_(specular), attenuation_(attenuation) {};
 
   __host__ __device__ 
-  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) : Light(position, ambient, diffuse, specular, glm::vec3(1, 0, 0)) {};
+  explicit Light(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular) 
+   : Light(position, ambient, diffuse, specular, glm::vec3(1, 0, 0)) {};
   
   __host__ __device__ 
   explicit Light() : Light(glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::vec3(0)) {};
