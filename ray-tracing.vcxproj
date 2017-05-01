@@ -68,6 +68,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -89,6 +91,7 @@
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
 copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <CudaCompile />
     <CudaCompile />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -154,23 +157,18 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="src\kernel.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rendering\Phong.h" />
-    <ClInclude Include="rendering\Camera.h" />
-    <ClInclude Include="rendering\Light.h" />
-    <ClInclude Include="rendering\Ray.h" />
-    <ClInclude Include="rendering\RayTrace.h" />
-    <ClInclude Include="rendering\Scene.h" />
-    <ClInclude Include="rendering\Sphere.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="utils\cuda_scoped_ptr.hpp" />
-    <ClInclude Include="utils\cuda_shared_ptr.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
+    <ClInclude Include="src\rendering\Phong.h" />
+    <ClInclude Include="src\rendering\Camera.h" />
+    <ClInclude Include="src\rendering\Light.h" />
+    <ClInclude Include="src\rendering\Ray.h" />
+    <ClInclude Include="src\rendering\RayTrace.h" />
+    <ClInclude Include="src\rendering\Scene.h" />
+    <ClInclude Include="src\rendering\Sphere.h" />
+    <ClInclude Include="src\utils\cuda_scoped_ptr.hpp" />
+    <ClInclude Include="src\utils\cuda_shared_ptr.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
