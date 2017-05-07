@@ -160,9 +160,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="src\kernel.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\rendering\Material.h" />
     <ClInclude Include="src\rendering\Phong.h" />
     <ClInclude Include="src\rendering\Camera.h" />
     <ClInclude Include="src\rendering\Light.h" />
+    <ClInclude Include="src\rendering\Materials.h" />
     <ClInclude Include="src\rendering\Ray.h" />
     <ClInclude Include="src\rendering\RayTrace.h" />
     <ClInclude Include="src\rendering\Scene.h" />

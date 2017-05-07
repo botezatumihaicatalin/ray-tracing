@@ -15,6 +15,7 @@
 #include "Light.h"
 #include "RayTrace.h"
 #include "Phong.h"
+#include "Materials.h"
 
 class Scene {
 
@@ -51,17 +52,14 @@ inline Scene::Scene(size_t width, size_t height) {
   camera_ = Camera(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
   ratio_ = width / float(height);
 
-  const Material sphere_material1(glm::vec3(0.2, 0.2, 0.22), glm::vec3(0.6, 0.7, 0.8), 
-                                 glm::vec3(1, 1, 1), 8);
-  const Material sphere_material2(glm::vec3(0.45, 0, 0), glm::vec3(0.8, 0, 0),
-                                  glm::vec3(1, 1, 1), 40);
-
-  spheres_.push_back(Sphere(glm::vec3(0, 0, 5), 0.5f, sphere_material1));
-  spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f, sphere_material2));
+  spheres_.push_back(Sphere(glm::vec3(0, 0, 5), 0.5f, Materials::EMERALD));
+  spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f, Materials::REDRUBBER));
+  spheres_.push_back(Sphere(glm::vec3(3, 2, 6), 0.3f, Materials::GOLD));
+  spheres_.push_back(Sphere(glm::vec3(-1, 1, 10), 0.9f, Materials::YELLOWPLASTIC));
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(1.0f), glm::vec3(1.0f), 
-                          glm::vec3(1.0f), glm::vec3(1.f, .3f, 0.0f)));
+                          glm::vec3(1.0f), glm::vec3(1.f, 0.05f, 0.0f)));
 }
 
 __device__ inline Ray make_ray(const Camera& camera, float x, float y, size_t width, size_t height) {
