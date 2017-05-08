@@ -4,3 +4,6 @@
 [submodule "vendor/cimg"]
 	path = vendor/cimg
 	url = https://github.com/dtschump/CImg.git
+[submodule "vendor/tbb"]
+	path = vendor/tbb
+	url = https://github.com/01org/tbb.git

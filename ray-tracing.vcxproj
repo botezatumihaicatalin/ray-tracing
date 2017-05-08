@@ -68,11 +68,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
-    <SourcePath>$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)vendor\tbb\include;$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)vendor\tbb;$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(SourcePath)</SourcePath>
+    <LibraryPath>$(ProjectDir)vendor\tbb\build\vs2012\Win32\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(ProjectDir)vendor\tbb\include;$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)vendor\tbb;$(ProjectDir)vendor\glm;$(ProjectDir)vendor;$(SourcePath)</SourcePath>
+    <LibraryPath>$(ProjectDir)vendor\tbb\build\vs2012\Win32\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,7 +95,10 @@
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "$(ProjectDir)vendor\tbb\build\vs2012\Win32\Debug\tbb*.dll" "$(OutDir)"
+copy "$(ProjectDir)vendor\tbb\build\vs2012\Win32\Debug\tbb*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <CudaCompile />
     <CudaCompile />
@@ -130,7 +139,10 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "$(ProjectDir)vendor\tbb\build\vs2012\Win32\Release\tbb*.dll" "$(OutDir)"
+copy "$(ProjectDir)vendor\tbb\build\vs2012\Win32\Release\tbb*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
