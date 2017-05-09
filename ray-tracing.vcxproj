@@ -184,6 +184,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\rendering\Surface.h" />
     <ClInclude Include="src\utils\cuda_scoped_ptr.hpp" />
     <ClInclude Include="src\utils\cuda_shared_ptr.hpp" />
+    <ClInclude Include="src\utils\cuda_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

@@ -8,6 +8,7 @@
 #include "glm/vec3.hpp"
 
 #include "../utils/cuda_scoped_ptr.hpp"
+#include "../utils/cuda_utils.hpp"
 
 #include "Camera.h"
 #include "Ray.h"
@@ -164,9 +165,9 @@ inline glm::vec3* Scene::render() const {
   cuda_scoped_ptr<Light> d_lights(lights_.size());
   cuda_scoped_ptr<Sphere> d_spheres(spheres_.size());
 
-  cudaMemcpy(d_camera.get(), &camera_, sizeof(Camera), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_lights.get(), &lights_[0], lights_.size() * sizeof(Light), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_spheres.get(), &spheres_[0], spheres_.size() * sizeof(Sphere), cudaMemcpyHostToDevice);
+  cudaCheck(cudaMemcpy(d_camera.get(), &camera_, sizeof(Camera), cudaMemcpyHostToDevice));
+  cudaCheck(cudaMemcpy(d_lights.get(), &lights_[0], lights_.size() * sizeof(Light), cudaMemcpyHostToDevice));
+  cudaCheck(cudaMemcpy(d_spheres.get(), &spheres_[0], spheres_.size() * sizeof(Sphere), cudaMemcpyHostToDevice));
 
   dim3 threadsPerBlock(16, 16);
   dim3 numBlocks((width_ / threadsPerBlock.x) + 1, (height_ / threadsPerBlock.y) + 1);
@@ -176,12 +177,12 @@ inline glm::vec3* Scene::render() const {
                                                   lights_.size(), d_spheres.get(), spheres_.size(), 
                                                   antialiasing_, d_buffer.get());
 
-  cudaDeviceSynchronize();
+  cudaCheck(cudaDeviceSynchronize());
   clock_t t1 = clock();
   printf("Kernel render = %f secs\n", float(t1 - t0) / 1000);
 
   glm::vec3* buffer = new glm::vec3[width_ * height_];
-  cudaMemcpy(buffer, d_buffer.get(), width_ * height_ * sizeof(glm::vec3), cudaMemcpyDeviceToHost);
+  cudaCheck(cudaMemcpy(buffer, d_buffer.get(), width_ * height_ * sizeof(glm::vec3), cudaMemcpyDeviceToHost));
   return buffer;
 }
 

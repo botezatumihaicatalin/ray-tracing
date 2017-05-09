@@ -1,17 +1,11 @@
 #pragma once
 
-/*
-* (C) Copyright Karol Dzitkowski 2015
-*
-*/
-
-#define CUDA_CALL(x) do { assert((x)==cudaSuccess); } while(0)
+#include "cuda_utils.hpp"
 
 #include <cuda_runtime_api.h>
 #include <assert.h>
 #include <algorithm>            // for std::swap
 #include <atomic>
-#include <cstddef>
 
 template <class T>
 class cuda_shared_ptr {
@@ -22,7 +16,7 @@ private:
 public:
   explicit cuda_shared_ptr() {
     init_();
-    CUDA_CALL(cudaMalloc(&ptr_, sizeof(T)));
+    cudaCheck(cudaMalloc(&ptr_, sizeof(T)));
   }
 
   explicit cuda_shared_ptr(size_t size) {
@@ -31,7 +25,7 @@ public:
       ptr_ = nullptr;
     }
     else {
-      CUDA_CALL(cudaMalloc(&ptr_, size * sizeof(T)));
+      cudaCheck(cudaMalloc(&ptr_, size * sizeof(T)));
     }
   }
 
@@ -41,7 +35,7 @@ public:
 
   ~cuda_shared_ptr() {
     if (dec_counter_()) {
-      CUDA_CALL(cudaFree(ptr_));
+      cudaCheck(cudaFree(ptr_));
       delete cnt_;
     }
   }

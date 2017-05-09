@@ -1,11 +1,6 @@
 #pragma once
 
-/*
-* (C) Copyright Karol Dzitkowski 2015
-*
-*/
-
-#define CUDA_CALL(x) do { assert((x)==cudaSuccess); } while(0)
+#include "cuda_utils.hpp"
 
 #include <cuda_runtime_api.h>
 #include <assert.h>
@@ -25,7 +20,7 @@ private:
 
 public:
   explicit cuda_scoped_ptr() {
-    CUDA_CALL(cudaMalloc(&ptr_, sizeof(T)));
+    cudaCheck(cudaMalloc(&ptr_, sizeof(T)));
   }
 
   explicit cuda_scoped_ptr(size_t size) {
@@ -33,14 +28,14 @@ public:
       ptr_ = nullptr;
     }
     else {
-      CUDA_CALL(cudaMalloc(&ptr_, size * sizeof(T)));
+      cudaCheck(cudaMalloc(&ptr_, size * sizeof(T)));
     }
   }
 
   explicit cuda_scoped_ptr(T* p = nullptr) : ptr_(p) {}
 
   ~cuda_scoped_ptr() {
-    CUDA_CALL(cudaFree(ptr_));
+    cudaCheck(cudaFree(ptr_));
   }
 
   void reset(T* p = nullptr) {
