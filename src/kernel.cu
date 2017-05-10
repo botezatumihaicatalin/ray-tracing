@@ -54,11 +54,11 @@ int main() {
     }
 
     if (main_disp.is_keyR()) {
-      scene.camera().rotate(-0.1f);
+      scene.camera().rotate(0.1f);
     }
 
     if (main_disp.is_keyE()) {
-      scene.camera().rotate(0.1f);
+      scene.camera().rotate(-0.1f);
     }
 
     main_disp.wait();

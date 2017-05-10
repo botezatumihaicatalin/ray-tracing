@@ -54,18 +54,23 @@ inline Scene::Scene(size_t width, size_t height) {
   ratio_ = width / float(height);
 
   spheres_.push_back(Sphere(glm::vec3(0, 0, 5), 0.5f, Materials::EMERALD));
-  spheres_.push_back(Sphere(glm::vec3(1, 1, 4), 0.7f, Materials::REDRUBBER));
-  spheres_.push_back(Sphere(glm::vec3(3, 2, 6), 0.3f, Materials::GOLD));
-  spheres_.push_back(Sphere(glm::vec3(-1, 1, 10), 0.9f, Materials::YELLOWPLASTIC));
+  spheres_.push_back(Sphere(glm::vec3(-1, 1, 4), 0.7f, Materials::REDRUBBER));
+  spheres_.push_back(Sphere(glm::vec3(-3, 2, 6), 0.3f, Materials::GOLD));
+  spheres_.push_back(Sphere(glm::vec3(1, 1, 10), 0.9f, Materials::YELLOWPLASTIC));
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(1.0f), glm::vec3(1.0f), 
                           glm::vec3(1.0f), glm::vec3(1.f, 0.05f, 0.0f)));
 }
 
-__device__ inline Ray make_ray(const Camera& camera, float x, float y, size_t width, size_t height) {
-  float nx = (x / float(width)) - 0.5f;
-  float ny = (y / float(height)) - 0.5f;
+__device__ inline Ray make_ray(const Camera& camera, float x, float y, float width, float height) {
+  float fov_degrees = 60;
+  float fov_radians = fov_degrees * 3.14159265359f / 180.f;
+  float fov_scale = tanf(fov_radians / 2);
+  float aspect_ratio = width / height;
+  
+  float nx = (1 - 2 * ((x + 0.5f) / width)) * fov_scale * aspect_ratio;
+  float ny = (2 * ((y + 0.5f) / height) - 1) * fov_scale;
 
   glm::vec3 camera_right = glm::cross(camera.target(), camera.up());
 
