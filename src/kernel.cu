@@ -11,6 +11,26 @@
 #include "rendering/Scene.h"
 #include "cimg/CImg.h"
 
+#include "tbb/tbb.h"
+
+void load_pixels(cimg_library::CImg<uint8_t>& image, glm::vec3* pixels_buf) {
+  if (image.spectrum() != 3) {
+    throw std::runtime_error("Can't copy");
+  }
+
+  size_t pixels_size = image.width() * image.height();
+
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, pixels_size), 
+                    [&](const tbb::blocked_range<size_t>& range) {
+    for (size_t idx = range.begin(), idx_end = range.end(); idx < idx_end; idx++) {
+      size_t y = idx / image.width(), x = idx % image.width();
+      for (size_t c = 0; c < 3; c++) {
+        image(x, y, 0, c) = uint8_t(pixels_buf[idx][c] * 255);
+      }
+    }
+  });
+}
+
 int main() {
 
   Scene scene(800, 600);
@@ -23,15 +43,7 @@ int main() {
     
     clock_t t0 = clock();
     std::unique_ptr<glm::vec3[]> pixels(scene.render());
-
-    uint32_t i = 0;
-    for (size_t y = 0; y < scene.height(); y++) {
-      for (size_t x = 0; x < scene.width(); x++, i++) {
-        for (size_t c = 0; c < 3; c++) {
-          image(x, y, 0, c) = uint8_t(pixels[i][c] * 255);
-        }
-      }
-    }
+    load_pixels(image, pixels.get());
     clock_t t1 = clock();
     printf("Render = %f secs\n", float(t1 - t0) / 1000);
 
