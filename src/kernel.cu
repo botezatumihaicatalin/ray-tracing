@@ -33,9 +33,11 @@ void load_pixels(cimg_library::CImg<uint8_t>& image, glm::vec3* pixels_buf) {
 
 int main() {
 
-  Scene scene(800, 600);
+  Scene scene(1280, 768);
   scene.antialiasing(true);
   cimg_library::CImg<uint8_t> image(scene.width(), scene.height(), 1, 3, 0);
+
+  // tbb::task_scheduler_init init(1);
 
   cimg_library::CImgDisplay main_disp(image, "W, A, S, D to move camera and E, R to rotate camera");
   while (!main_disp.is_closed()) {
@@ -71,6 +73,10 @@ int main() {
 
     if (main_disp.is_keyE()) {
       scene.camera().rotate(-0.1f);
+    }
+
+    if (main_disp.is_keyP()) {
+      scene.antialiasing(!scene.antialiasing());
     }
 
     main_disp.wait();

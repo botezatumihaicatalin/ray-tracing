@@ -57,10 +57,16 @@ inline Scene::Scene(size_t width, size_t height) {
   spheres_.push_back(Sphere(glm::vec3(-1, 1, 4), 0.7f, Materials::REDRUBBER));
   spheres_.push_back(Sphere(glm::vec3(-3, 2, 6), 0.3f, Materials::GOLD));
   spheres_.push_back(Sphere(glm::vec3(1, 1, 10), 0.9f, Materials::YELLOWPLASTIC));
+  spheres_.push_back(Sphere(glm::vec3(3, 2, 7), 0.8f, Materials::PEARL));
+  spheres_.push_back(Sphere(glm::vec3(-3, -1, 8), 0.8f, Materials::RUBY));
+  spheres_.push_back(Sphere(glm::vec3(5, 2, 12), 1.f, Materials::BRASS));
+  spheres_.push_back(Sphere(glm::vec3(2, -2, 5), 1.f, Materials::TURQUOISE));
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
-  lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(1.0f), glm::vec3(1.0f), 
-                          glm::vec3(1.0f), glm::vec3(1.f, 0.05f, 0.0f)));
+  lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(0.8f), glm::vec3(1.0f), 
+                          glm::vec3(0.7f), glm::vec3(1.f, 0.05f, 0.0f)));
+  lights_.push_back(Light(glm::vec3(0, 0, -1), glm::vec3(0.8f), glm::vec3(0.8f),
+                          glm::vec3(0.6f), glm::vec3(1.f, 0.15f, 0.0f)));
 }
 
 __device__ inline Ray make_ray(const Camera& camera, float x, float y, float width, float height) {
