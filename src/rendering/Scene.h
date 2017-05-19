@@ -1,8 +1,6 @@
 #pragma once
 
-#include <algorithm>
 #include <vector>
-#include <ctime>
 
 #include "glm/glm.hpp"
 #include "glm/vec3.hpp"
@@ -61,6 +59,13 @@ inline Scene::Scene(size_t width, size_t height) {
   spheres_.push_back(Sphere(glm::vec3(-3, -1, 8), 0.8f, Materials::RUBY));
   spheres_.push_back(Sphere(glm::vec3(5, 2, 12), 1.f, Materials::BRASS));
   spheres_.push_back(Sphere(glm::vec3(2, -2, 5), 1.f, Materials::TURQUOISE));
+
+  for (int i = 0; i < 50; i ++) {
+    glm::vec3 pos(rand() % 30 - 15, rand() % 30 - 15, rand() % 10 + 7);
+    double radius = rand() % 2;
+
+    spheres_.push_back(Sphere(pos, radius, Materials::PEARL));
+  }
 
   //lights_.push_back(Light(glm::vec3(1, 0, 4)));
   lights_.push_back(Light(glm::vec3(0, -3, 5), glm::vec3(0.8f), glm::vec3(1.0f), 
@@ -183,15 +188,11 @@ inline glm::vec3* Scene::render() const {
   dim3 threadsPerBlock(16, 16);
   dim3 numBlocks((width_ / threadsPerBlock.x) + 1, (height_ / threadsPerBlock.y) + 1);
 
-  clock_t t0 = clock();
   render_kernel <<<numBlocks, threadsPerBlock>>> (width_, height_, d_camera.get(), d_lights.get(), 
                                                   lights_.size(), d_spheres.get(), spheres_.size(), 
                                                   antialiasing_, d_buffer.get());
-
   cudaCheck(cudaDeviceSynchronize());
-  clock_t t1 = clock();
-  printf("Kernel render = %f secs\n", float(t1 - t0) / 1000);
-
+  
   glm::vec3* buffer = new glm::vec3[width_ * height_];
   cudaCheck(cudaMemcpy(buffer, d_buffer.get(), width_ * height_ * sizeof(glm::vec3), cudaMemcpyDeviceToHost));
   return buffer;
